@@ -11,10 +11,18 @@ import { Router } from "express";
 const router = Router();
 const clients = new Set();
 
+// Heartbeat: mantiene viva la conexion a traves de proxies
+// que cierran streams inactivos (nginx sin read_timeout alto).
+setInterval(() => {
+  clients.forEach((res) => {
+    try { res.write(": ping\n\n"); } catch (e) { clients.delete(res); }
+  });
+}, 25000).unref();
+
 export function broadcast(payload) {
   const msg = "data: " + JSON.stringify(payload) + "\n\n";
   clients.forEach((res) => {
-    try { res.write(msg); } catch (e) { /* cliente desconectado */ }
+    try { res.write(msg); } catch (e) { clients.delete(res); }
   });
 }
 

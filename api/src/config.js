@@ -13,6 +13,12 @@ export const PORT = process.env.PORT || 3000;
 // en produccion apuntar al dominio real del frontend.
 export const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
+// Salto(s) de proxy de confianza para req.ip real.
+// Detras de nginx/caddy en produccion: TRUST_PROXY=1.
+// Sin esto, todos los clientes comparten la IP del proxy
+// y el rate-limit por IP bloquearia a toda una NAT.
+export const TRUST_PROXY = Number(process.env.TRUST_PROXY) || 0;
+
 // Whitelist de categorias (espejo de config.js frontend)
 export const categories = [
   "Alumbrado publico",
@@ -37,10 +43,36 @@ export const LIMITS = {
   maxDescription: 1000,
   // Foto dataURL: base64 infla ~33%. 2MB de imagen => ~2.7MB de texto.
   maxPhotoBytes: 3 * 1024 * 1024,
-  // Rate limit (por IP, ventana deslizante)
+  // Rate limit (por IP + X-Device-Id, ventana deslizante).
+  // Generosos a proposito: disuaden al bot sin molestar
+  // al usuario anonimo legitimo (anonimato = valor central).
   createPerMinute: 10,
   votePerMinute: 30,
-  windowMs: 60 * 1000
+  windowMs: 60 * 1000,
+  // Un voto por dispositivo + reporte (espejo del localStorage
+  // del cliente; aca es la frontera real, no best-effort).
+  maxVotesPerDevicePerReport: 1,
+  // Paginacion del listado: el detalle es el unico que trae foto.
+  listPageSize: 50,
+  listMaxPageSize: 100
+};
+
+// Filtro de contenido explicito (NSFW/pornografia): el filtro
+// PRINCIPAL del proyecto. Clasificador ViT via transformers.js
+// (ONNX, WASM puro, sin binarios nativos). El modelo se descarga
+// de HuggingFace al primer arranque y queda en data/models/hf.
+export const NSFW = {
+  enabled: process.env.NSFW_ENABLED !== "0",   // default: ON
+  threshold: Number(process.env.NSFW_THRESHOLD) || 0.5, // puntaje nsfw >= umbral => bloquea
+  modelId: process.env.NSFW_MODEL || "AdamCodd/vit-base-nsfw-detector",
+  dtype: process.env.NSFW_DTYPE || "int8"
+};
+
+// Dedupe GLOBAL (servidor): misma foto o misma zona+categoria
+// dentro de la ventana => se rechaza el duplicado deliberado.
+export const DEDUPE = {
+  windowMs: 7 * 24 * 60 * 60 * 1000, // 7 dias
+  gridDigits: 3                      // ~110m x ~110m (lat/lon a 3 decimales)
 };
 
 // Seed inicial (espejo de demo-data.js del frontend).

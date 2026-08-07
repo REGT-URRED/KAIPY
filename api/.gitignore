@@ -1,6 +1,5 @@
 # Dependencias
 node_modules/
 
-# Datos de ejecucion (se regeneran con el seed al arrancar)
-data/db.json
-data/db.json.tmp
+# Datos de ejecucion (db.json con seed y cache de modelos ML)
+data/

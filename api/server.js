@@ -12,8 +12,9 @@
    ============================================ */
 import express from "express";
 import cors from "cors";
-import { PORT, CORS_ORIGIN, LIMITS } from "./src/config.js";
+import { PORT, CORS_ORIGIN, TRUST_PROXY } from "./src/config.js";
 import { ensureReady } from "./src/db.js";
+import { ensureClassifier } from "./src/filters/nsfw.js";
 import reportsRouter from "./src/routes/reports.js";
 import statsRouter from "./src/routes/stats.js";
 import eventsRouter from "./src/routes/events.js";
@@ -23,8 +24,29 @@ await ensureReady();
 
 const app = express();
 
+app.set("trust proxy", TRUST_PROXY);
+
 app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json({ limit: "3mb" }));
+
+// Headers de seguridad (equivalente minimo de helmet, cero deps)
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Powered-By", "");
+  next();
+});
+
+// Guard de Content-Type en mutaciones: solo JSON.
+// (Sin cookies no hay CSRF clasico, pero rechaza
+// body form-urlencoded que express.json ignoraria.)
+app.post(["/api/reports", "/api/reports/*/vote"], (req, res, next) => {
+  if (!req.is("application/json")) {
+    return res.status(415).json({ error: "Content-Type debe ser application/json." });
+  }
+  next();
+});
 
 // Log simple de solicitudes (util para demo)
 app.use((req, res, next) => {
@@ -53,4 +75,7 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log("kaipy API escuchando en http://localhost:" + PORT);
+  // Precarga el clasificador NSFW en segundo plano: la primera
+  // clasificacion ya no espera la descarga/compilacion del modelo.
+  ensureClassifier().catch(() => {});
 });
