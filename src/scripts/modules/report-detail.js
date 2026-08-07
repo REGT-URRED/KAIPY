@@ -30,11 +30,13 @@ window.KAIPY = window.KAIPY || {};
     utils.el("detail-votes").textContent = (r.votes || 0) + " lo vieron";
 
     var hero = utils.el("detail-hero");
-    if (r.photo) {
+    var photo = utils.safePhoto(r.photo);
+    if (photo) {
       var img = document.createElement("img");
       img.className = "detail-page__img";
-      img.src = r.photo;
+      img.src = photo;
       img.alt = r.title;
+      img.decoding = "async";
       hero.appendChild(img);
     } else {
       var ph = document.createElement("div");
@@ -59,26 +61,59 @@ window.KAIPY = window.KAIPY || {};
     }
     voteBtn.addEventListener("click", function () {
       // Voto con identidad de dispositivo (anti-abuso).
-      // Un dispositivo cuenta un solo apoyo; el backend (FASE 2)
-      // revalidara por huella. Ver docs/ANTIABUSO.md.
+      // Con API: dedupe real en servidor (1 voto por huella +
+      // reporte). Sin API: best-effort local (localStorage).
       voteBtn.disabled = true;
-      window.KAIPY.fingerprint.getId().then(function (deviceId) {
+      window.KAIPY.fingerprint.getId().then(async function (deviceId) {
+        var services = window.KAIPY.services;
+        var up = await services.isUp();
+        if (up) {
+          var res = await services.vote(r.id, deviceId);
+          if (!res.ok) {
+            voteBtn.disabled = false;
+            utils.toast("No se pudo registrar el apoyo. Intenta de nuevo.");
+            return;
+          }
+          utils.markVoted(r.id);
+          voteBtn.classList.add("is-done");
+          voteBtn.textContent = res.already ? "Ya lo registraste" : "Registrado";
+          utils.el("detail-votes").textContent = res.votes + " lo vieron";
+          utils.toast(res.already
+            ? "Ya habias apoyado este reporte."
+            : "Gracias. Tu apoyo le da visibilidad al reporte.");
+          return;
+        }
+
         storage.vote(r.id, deviceId);
         utils.markVoted(r.id);
         voteBtn.classList.add("is-done");
         voteBtn.textContent = "Registrado";
-        utils.el("detail-votes").textContent = storage.get(r.id).votes + " lo vieron";
+        var local = storage.get(r.id);
+        utils.el("detail-votes").textContent = (local ? local.votes : r.votes) + " lo vieron";
         utils.toast("Gracias. Tu apoyo le da visibilidad al reporte.");
       });
     });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    var r = storage.get(getId());
-    if (!r) {
-      utils.el("detail-title").textContent = "Reporte no encontrado";
-      return;
-    }
-    render(r);
+    var services = window.KAIPY.services;
+    services.isUp().then(function (up) {
+      if (up) {
+        services.get(getId()).then(function (r) {
+          if (!r) {
+            utils.el("detail-title").textContent = "Reporte no encontrado";
+            return;
+          }
+          render(r);
+        });
+        return;
+      }
+      var r = storage.get(getId());
+      if (!r) {
+        utils.el("detail-title").textContent = "Reporte no encontrado";
+        return;
+      }
+      render(r);
+    });
   });
 })();

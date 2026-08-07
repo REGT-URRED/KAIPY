@@ -1,10 +1,21 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- CSP: sin scripts inline (todo es 'self'); style 'unsafe-inline' por
+       style="" de Leaflet y placeholders. connect-src incluye el API dev. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.tile.openstreetmap.org; connect-src 'self' http://localhost:3000; font-src 'self'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
   <title>Reportar - kaipy</title>
   <meta name="theme-color" content="#0c0a09">
+  <!-- PWA: agregar a pantalla de inicio (iPhone) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23e11d48'/%3E%3Ccircle cx='50' cy='42' r='22' fill='white'/%3E%3Cpath d='M50 62 L32 80 L68 80 Z' fill='white'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="src/assets/img/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
   <!-- VENDOR -->
   <link rel="stylesheet" href="src/assets/vendor/leaflet/leaflet.css">
   <!-- BASE -->
@@ -31,6 +42,10 @@
   <header class="topbar">
     <div class="topbar__inner">
       <a href="index.html" class="topbar__brand">kaip<span class="brand-y">y</span></a>
+      <nav class="topbar__nav" aria-label="Principal">
+        <a href="index.html" class="topbar__nav-item">Ver</a>
+        <a href="stats.html" class="topbar__nav-item">Estadísticas</a>
+      </nav>
       <div class="topbar__actions">
         <a class="btn btn--ghost" href="index.html">Cancelar</a>
         <button id="theme-toggle" class="btn btn--ghost topbar__theme" type="button" aria-label="Cambiar tema" title="Cambiar tema">
@@ -128,6 +143,7 @@
   <!-- CORE -->
   <script src="src/scripts/core/config.js"></script>
   <script src="src/scripts/core/utils.js"></script>
+  <script src="src/scripts/modules/services.js"></script>
   <!-- MODULES -->
   <script src="src/scripts/modules/fingerprint.js"></script>
   <script src="src/scripts/modules/storage.js"></script>

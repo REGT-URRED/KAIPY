@@ -23,7 +23,9 @@ window.KAIPY = window.KAIPY || {};
     swipe: { startX: 0, startY: 0, dx: 0 }
   };
 
-  var mqDesktop = window.matchMedia("(min-width: 900px)");
+  /* Desktop = ancho >= 900px CON puntero fino (mouse/trackpad).
+     Un telefono en landscape (~932px) no activa la vista desktop. */
+  var mqDesktop = window.matchMedia("(min-width: 900px) and (pointer: fine)");
 
   function isDesktop() { return mqDesktop.matches; }
 
@@ -68,9 +70,10 @@ window.KAIPY = window.KAIPY || {};
   /* --- Deck (movil) --- */
   function cardHtml(r) {
     var stateLabel = config.states[r.state] || r.state;
+    var photo = utils.safePhoto(r.photo);
     var media;
-    if (r.photo) {
-      media = '<img class="deck__img" src="' + r.photo + '" alt="' + utils.escapeHtml(r.title) + '">';
+    if (photo) {
+      media = '<img class="deck__img" src="' + photo + '" alt="' + utils.escapeHtml(r.title) + '" loading="lazy" decoding="async">';
     } else {
       media = '<div class="deck__placeholder" style="' + utils.placeholderStyle(r.category) + '">' +
         utils.escapeHtml(r.category.charAt(0)) + '</div>';
@@ -207,9 +210,10 @@ window.KAIPY = window.KAIPY || {};
   /* --- Grilla (desktop) --- */
   function desktopCardHtml(r) {
     var stateLabel = config.states[r.state] || r.state;
+    var photo = utils.safePhoto(r.photo);
     var media;
-    if (r.photo) {
-      media = '<img class="d-card__img" src="' + r.photo + '" alt="' + utils.escapeHtml(r.title) + '" loading="lazy">';
+    if (photo) {
+      media = '<img class="d-card__img" src="' + photo + '" alt="' + utils.escapeHtml(r.title) + '" loading="lazy" decoding="async">';
     } else {
       media = '<div class="d-card__placeholder" style="' + utils.placeholderStyle(r.category) + '">' +
         utils.escapeHtml(r.category.charAt(0)) + '</div>';
@@ -333,6 +337,37 @@ window.KAIPY = window.KAIPY || {};
     });
   }
 
+  // API first: si el servidor responde, el feed real reemplaza
+  // al demo local y se suscribe a eventos en vivo (SSE).
+  function loadFromApi() {
+    var services = window.KAIPY.services;
+    services.isUp().then(function (up) {
+      if (!up) { return; }
+      services.list().then(function (reports) {
+        if (!reports) { return; }
+        state.reports = reports;
+        state.index = 0;
+        render(); // render() tambien pinta el mapa
+
+        // Tiempo real multiusuario: reporte nuevo y votos
+        services.subscribe(function (ev) {
+          if (ev.type === "report:new" && ev.report) {
+            state.reports.unshift(ev.report);
+            render();
+          } else if (ev.type === "report:vote") {
+            for (var i = 0; i < state.reports.length; i++) {
+              if (state.reports[i].id === ev.id) {
+                state.reports[i].votes = ev.votes;
+                break;
+              }
+            }
+            render();
+          }
+        });
+      });
+    });
+  }
+
   function init() {
     window.KAIPY.storage.seed(window.KAIPY.demoData);
     state.reports = storage.all();
@@ -341,6 +376,7 @@ window.KAIPY = window.KAIPY || {};
     initDesktopControls();
     initNearby();
     render();
+    loadFromApi();
 
     // Cambio de viewport (movil <-> desktop)
     mqDesktop.addEventListener("change", function () {

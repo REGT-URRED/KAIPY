@@ -17,6 +17,17 @@ window.KAIPY.utils = {
     return div.innerHTML;
   },
 
+  // Solo devuelve fotos seguras para <img src>:
+  // dataURL de la whitelist (espejo del backend) o ruta
+  // local sin esquema. Rechaza svg+xml, javascript:, //,
+  // o cualquier valor que pueda romper el atributo (XSS).
+  safePhoto: function (value) {
+    if (typeof value !== "string" || !value) { return null; }
+    if (/^data:image\/(jpeg|png|webp);base64,/.test(value)) { return value; }
+    if (/^[a-zA-Z0-9_\-./]+$/.test(value) && value.indexOf("//") === -1) { return value; }
+    return null;
+  },
+
   // Formatea una fecha ISO a texto corto local
   formatDate: function (iso) {
     if (!iso) { return "Fecha desconocida"; }

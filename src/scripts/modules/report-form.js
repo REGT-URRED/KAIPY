@@ -47,13 +47,20 @@ window.KAIPY = window.KAIPY || {};
     input.addEventListener("change", function () {
       var file = input.files && input.files[0];
       if (!file) { return; }
-      window.KAIPY.image.readCompressed(file).then(function (dataUrl) {
-        state.photo = dataUrl;
-        preview.src = dataUrl;
+      var errEl = utils.el("photo-error");
+      errEl.classList.remove("hint--error");
+      window.KAIPY.image.readCompressed(file).then(function (res) {
+        state.photo = res.dataUrl;
+        preview.src = res.dataUrl;
         zone.classList.add("photo--has-image");
-        utils.el("photo-error").textContent = "";
+        errEl.textContent = "Foto lista · " +
+          (res.sizeBytes >= 1048576
+            ? (res.sizeBytes / 1048576).toFixed(1) + " MB"
+            : Math.round(res.sizeBytes / 1024) + " KB") +
+          " · " + res.width + "x" + res.height + "px";
       }).catch(function (err) {
-        utils.el("photo-error").textContent = err.message;
+        errEl.classList.add("hint--error");
+        errEl.textContent = err.message;
       });
     });
   }
@@ -144,20 +151,45 @@ window.KAIPY = window.KAIPY || {};
       }
 
       // Filtro anti-abuso: identidad de dispositivo primero.
-      // Best-effort en cliente; el backend (FASE 2) revalida.
+      // Con API: el servidor aplica los filtros reales (NSFW,
+      // keywords, dedupe global, rate-limit). Sin API: filtros
+      // locales best-effort + localStorage (demo offline).
       var btn = form.querySelector("[type=submit]");
       btn.disabled = true;
-      window.KAIPY.fingerprint.getId().then(function (deviceId) {
+      window.KAIPY.fingerprint.getId().then(async function (deviceId) {
+        var title = utils.sanitizeText(utils.el("title").value, 120);
+        var description = utils.sanitizeText(utils.el("description").value, 1000);
+        var payload = {
+          title: title || (state.category + " (sin titulo)"),
+          description: description || "Reporte anonimo sin descripcion.",
+          category: state.category,
+          photo: state.photo,
+          lat: state.lat,
+          lon: state.lon
+        };
+
+        var services = window.KAIPY.services;
+        var up = await services.isUp();
+        if (up) {
+          var res = await services.create(payload, deviceId);
+          if (res.ok) {
+            window.location.href = "reporte.html?id=" + encodeURIComponent(res.report.id);
+            return;
+          }
+          btn.disabled = false;
+          utils.toast(res.message);
+          return;
+        }
+
+        // --- Modo offline (sin API) ---
         var storage = window.KAIPY.storage;
 
-        // 1. Rate-limit: demasiados reportes en poco tiempo
         if (!storage.submitAllowed(deviceId)) {
           btn.disabled = false;
           utils.toast("Demasiados reportes en poco tiempo. Espera unos minutos.");
           return;
         }
 
-        // 2. Duplicado casi exacto del mismo dispositivo
         var dup = storage.findDuplicate({
           deviceId: deviceId,
           category: state.category,
@@ -170,17 +202,8 @@ window.KAIPY = window.KAIPY || {};
           return;
         }
 
-        var title = utils.sanitizeText(utils.el("title").value, 120);
-        var description = utils.sanitizeText(utils.el("description").value, 1000);
-        var report = storage.add({
-          title: title || (state.category + " (sin titulo)"),
-          description: description || "Reporte anonimo sin descripcion.",
-          category: state.category,
-          photo: state.photo,
-          lat: state.lat,
-          lon: state.lon,
-          deviceId: deviceId
-        });
+        payload.deviceId = deviceId;
+        var report = storage.add(payload);
         storage.recordSubmission(deviceId);
 
         window.location.href = "reporte.html?id=" + encodeURIComponent(report.id);
