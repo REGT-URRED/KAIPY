@@ -16,7 +16,8 @@ principal contra contenido inapropiado.
 
 ## Páginas
 
-- `index.html` — home app: métricas, filtros, feed y mapa (tabs)
+- `index.html` — home: mapa + tarjetas estilo Tinder (móvil) o mapa
+  grande + panel de filtros y grilla (desktop)
 - `reportar.html` — reporte anónimo en 3 pasos (foto, categoría, GPS)
 - `reporte.html?id=...` — detalle con mapa y "Yo también lo vi"
 - `stats.html` — estadísticas (por categoría y estados)
@@ -41,6 +42,35 @@ principal contra contenido inapropiado.
 - Reportes **anónimos**: sin registro, sin cookies; la huella de
   dispositivo (FingerprintJS local) solo correlaciona y limita
   suavemente — nunca bloquea al usuario legítimo.
+
+### Imágenes (pipeline preparado para fotos reales)
+
+- Compresión en el cliente (canvas): lado mayor a 1280px, JPEG, con
+  calidad adaptativa que baja hasta caber en el límite del backend
+  (3 MB) — nunca se entrega una foto que el servidor rechace.
+- Orientación EXIF de iOS normalizada por el navegador; transparencia
+  (capturas PNG) rellenada de blanco; EXIF/GPS descartado también en
+  servidor (re-encode).
+- Límites centralizados en `config.image` (frontend) como espejo de
+  `LIMITS` (backend): si cambia uno, cambia el otro.
+- Render diferido (`loading="lazy" decoding="async"`) en deck, grilla,
+  popups y detalle; thumbnail en los popups del mapa. Hoy el feed usa
+  SVGs de demo (`src/assets/img/`).
+
+### Responsive móvil (iPhone incluido)
+
+- **Safe-area:** el topbar respeta el notch / Dynamic Island y el
+  bottom-nav el home indicator (`env(safe-area-inset-*)`).
+- **`color-scheme`** por tema: selects y scrollbars nativos de iOS
+  correctos en modo oscuro.
+- **`touch-action: manipulation`** en botones y nav (sin doble-tap
+  zoom) y tap targets ≥ 44px (HIG de Apple).
+- **Desktop con `(min-width: 900px) and (pointer: fine)`**: un teléfono
+  en landscape (~932px) NO recibe la vista desktop; el deck se mantiene.
+- **Tablet (640–900px):** deck y mapa ampliados. **Hover solo con
+  puntero real** (`@media (hover: hover)`): sin hover pegajoso al tocar.
+- **PWA mínima:** `manifest.json`, iconos y `apple-touch-icon` — el
+  sitio se puede "Agregar a pantalla de inicio" en iPhone.
 
 ## Requisitos
 
