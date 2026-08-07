@@ -104,6 +104,17 @@
   min-width: 10rem;
 }
 
+/* Foto del reporte en el popup (fotos reales de usuarios
+   en el futuro; hoy los SVGs de demo) */
+.kaipy-popup__thumb {
+  width: 100%;
+  height: 4.5rem;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 0.2rem);
+  margin-bottom: var(--space-2);
+  background: var(--color-surface);
+}
+
 .kaipy-popup__title {
   display: block;
   margin-bottom: var(--space-2);

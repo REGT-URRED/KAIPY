@@ -62,9 +62,34 @@
 }
 
 /* ============================================
-   VISTA DESKTOP
+   TABLET (entre telefono y desktop)
+   Deck mas amplio y mapa mas alto para pantallas
+   medianas (iPad portrait, etc.).
    ============================================ */
-@media (min-width: 900px) {
+@media (min-width: 640px) and (max-width: 899.98px) {
+  .home-view {
+    max-width: 40rem;
+  }
+
+  .home-view .map__canvas {
+    height: clamp(16rem, 42dvh, 22rem);
+  }
+
+  .deck {
+    height: clamp(24rem, calc(100dvh - 30rem), 32rem);
+  }
+
+  .topbar__inner {
+    max-width: 40rem;
+  }
+}
+
+/* ============================================
+   VISTA DESKTOP
+   pointer:fine evita que un telefono en landscape
+   (p.ej. 932px) active la vista de escritorio.
+   ============================================ */
+@media (min-width: 900px) and (pointer: fine) {
   .home-view {
     max-width: 72rem;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);

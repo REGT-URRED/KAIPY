@@ -12,7 +12,7 @@
   animation: page-in var(--motion) var(--ease-out) both;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 900px) and (pointer: fine) {
   .stats-view {
     max-width: 72rem;
     padding: var(--space-6) var(--container-pad) var(--space-12);

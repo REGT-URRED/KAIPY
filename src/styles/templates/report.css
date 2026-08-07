@@ -119,14 +119,25 @@
   }
 }
 
-/* Desktop: formulario mas amplio */
-@media (min-width: 900px) {
+/* Desktop: formulario mas amplio; la barra de accion
+   pasa a flujo normal (sin bottom-nav no hay que flotar) */
+@media (min-width: 900px) and (pointer: fine) {
   .report-page {
     max-width: 48rem;
-    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+    padding-bottom: var(--space-8);
+  }
+  .report-page__actions {
+    position: static;
+    background: none;
+    padding: 0;
   }
   .report-page__actions-inner {
     max-width: 48rem;
+  }
+  .report-page__actions .btn {
+    width: auto;
+    min-width: 14rem;
+    margin-top: var(--space-4);
   }
   .report-form {
     display: grid;

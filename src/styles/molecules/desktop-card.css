@@ -52,10 +52,16 @@
   }
 }
 
-.d-card:hover {
-  box-shadow: var(--shadow);
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+@media (hover: hover) {
+  .d-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+  }
+
+  .d-card:hover .d-card__img {
+    transform: scale(1.05);
+  }
 }
 
 .d-card:active {

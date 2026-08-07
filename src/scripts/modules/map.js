@@ -48,8 +48,13 @@ window.KAIPY = window.KAIPY || {};
 
   function popupHtml(r) {
     var stateLabel = config.states[r.state] || r.state;
+    var photo = utils.safePhoto(r.photo);
+    var thumb = photo
+      ? '<img class="kaipy-popup__thumb" src="' + photo + '" alt="" loading="lazy" decoding="async">'
+      : "";
     return (
       '<div class="kaipy-popup">' +
+        thumb +
         '<strong class="kaipy-popup__title">' + utils.escapeHtml(r.title || r.category) + '</strong>' +
         '<div class="kaipy-popup__meta">' +
           '<span class="badge badge--category">' + utils.escapeHtml(r.category) + '</span> ' +

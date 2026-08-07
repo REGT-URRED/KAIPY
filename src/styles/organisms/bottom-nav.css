@@ -34,10 +34,18 @@
   text-align: center;
   transition: color var(--motion) ease, transform var(--motion) var(--ease-out);
   -webkit-tap-highlight-color: transparent;
+  /* Sin doble-tap zoom en iOS */
+  touch-action: manipulation;
 }
 
 .bottom-nav__item:hover {
   color: var(--color-text);
+}
+
+@media (hover: none) {
+  .bottom-nav__item:hover {
+    color: var(--color-text-muted);
+  }
 }
 
 .bottom-nav__item:active {

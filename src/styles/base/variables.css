@@ -5,6 +5,9 @@
    espaciados. GRASP: protected variations.
    ============================================ */
 :root {
+  /* Controles nativos (select, scrollbars) en modo claro */
+  color-scheme: light;
+
   /* Color — paleta kaipy (carmesi, sin asociacion politica) */
   --color-primary: #e11d48;
   --color-primary-dark: #be123c;
@@ -88,6 +91,9 @@ html.theme-anim *::after {
    Se activa con data-theme="dark" en <html>.
    ============================================ */
 :root[data-theme="dark"] {
+  /* Controles nativos (select, scrollbars) en modo oscuro */
+  color-scheme: dark;
+
   --color-bg: #0c0a09;
   --color-surface: #1c1917;
   --color-text: #f5f5f4;
