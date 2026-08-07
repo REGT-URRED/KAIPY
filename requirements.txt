@@ -1,0 +1,19 @@
+# kaipy — requisitos del entorno
+#
+# Proyecto Node.js: las dependencias JS se instalan con npm y viven
+# declaradas en api/package.json + api/package-lock.json (fuente de
+# verdad; este archivo solo documenta el toolchain).
+#
+# --- Requerido ---
+# Node.js >= 18  (probado en v24; npm incluido)
+#   - Instalar dependencias:  cd api && npm install   (o npm ci)
+#
+# --- Opcional (solo para servir el frontend estatico en demo) ---
+# Python 3.10+  (http.server del stdlib, no requiere pip install)
+#   - Servir frontend:  python -m http.server 8099  (desde la raiz)
+#
+# --- Sin dependencias pip ---
+# Este proyecto no usa paquetes Python: requirements.txt existe solo
+# como documentacion del toolchain. El clasificador NSFW corre con
+# @huggingface/transformers (ONNX/WASM, sin binarios nativos) y el
+# modelo (~84 MB) se descarga solo en el primer arranque del API.
