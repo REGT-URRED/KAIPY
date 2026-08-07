@@ -1,0 +1,26 @@
+# ============================================
+# Herramientas locales - no parte del proyecto
+# ============================================
+.kilo/
+.openclaude/
+kilo.json
+
+# Artefactos de sesiones de testing (Playwright MCP)
+.playwright-mcp/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores / IDEs
+.vscode/
+.idea/
+*.swp
+
+# ============================================
+# (FUTURO) backend FASE 2 - dependencias y secretos
+# ============================================
+node_modules/
+.env
+.env.*
+

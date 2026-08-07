@@ -1,0 +1,15 @@
+/* ============================================
+   BASE / typography
+   ============================================ */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.15;
+  font-weight: 700;
+  text-wrap: balance;
+}

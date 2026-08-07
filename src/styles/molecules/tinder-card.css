@@ -1,0 +1,235 @@
+/* ============================================
+   MOLECULES / tinder-card
+   Tarjeta de reporte estilo Tinder: foto grande,
+   datos y gesto de pasar (swipe).
+   ============================================ */
+.deck {
+  position: relative;
+  height: clamp(19rem, calc(100dvh - 33rem), 27rem);
+  min-height: 19rem;
+}
+
+.deck__card {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  touch-action: pan-y;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  will-change: transform;
+  cursor: pointer;
+}
+
+/* Entrada animada: solo la card superior (no rompe
+   el transform de las de atras ni el swipe inline) */
+#deck-current {
+  animation: deck-card-in var(--motion) var(--ease-out) both;
+}
+
+@keyframes deck-card-in {
+  from {
+    transform: translateY(0.75rem) scale(0.98);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.deck__card--behind {
+  transform: scale(0.97) translateY(0.5rem);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.deck__card--behind2 {
+  transform: scale(0.94) translateY(1rem);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.deck__card--leaving {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.deck__media {
+  flex: 1;
+  min-height: 0;
+  background: var(--color-surface);
+  position: relative;
+}
+
+.deck__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.deck__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: var(--text-4xl);
+  letter-spacing: 0.05em;
+}
+
+.deck__badges {
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.deck__badges .badge {
+  background: var(--color-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.deck__badges .badge--category {
+  border: none;
+}
+
+.deck__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.deck__title {
+  font-size: var(--text-xl);
+  line-height: 1.25;
+}
+
+.deck__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.deck__distance {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.deck__actions {
+  display: flex;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.deck__action {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  padding: var(--space-3);
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: all 0.15s ease;
+  touch-action: manipulation;
+}
+
+.deck__action--pass {
+  color: var(--color-text-muted);
+}
+
+.deck__action--pass:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.deck__action--detail:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.deck__counter {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+.deck__empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: var(--space-6);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* ============================================
+   STAMPS de swipe (PASAR / VER)
+   Aparecen segun la direccion del gesto.
+   ============================================ */
+.deck__stamp {
+  position: absolute;
+  top: 1.6rem;
+  z-index: 5;
+  padding: 0.35rem 0.9rem;
+  border: 3px solid currentColor;
+  border-radius: 0.5rem;
+  font-weight: 800;
+  font-size: var(--text-2xl);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transform: rotate(-14deg);
+  transition: opacity var(--motion-fast) ease, transform var(--motion) var(--ease-out);
+}
+
+.deck__stamp--pass {
+  right: 1.2rem;
+  color: var(--color-danger);
+}
+
+.deck__stamp--view {
+  left: 1.2rem;
+  color: var(--color-primary);
+  transform: rotate(14deg);
+}
+
+.deck__card.is-swiping-left .deck__stamp--pass {
+  opacity: 1;
+  transform: rotate(-14deg) scale(1.08);
+}
+
+.deck__card.is-swiping-right .deck__stamp--view {
+  opacity: 1;
+  transform: rotate(14deg) scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #deck-current {
+    animation: none;
+  }
+}

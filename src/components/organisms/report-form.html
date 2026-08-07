@@ -1,0 +1,60 @@
+<!--
+  ORGANISM: report-form
+  Nivel: organisms
+  CSS: assets/css/organisms/report-form.css
+  Compone molecules: form-field (categoria/foto/
+  titulo/descripcion/ubicacion) + actions.
+  El comportamiento vive en assets/js/modules/report-form.js
+  (GRASP controller); este HTML es referencia.
+-->
+<form id="report-form" class="report-form" novalidate>
+  <div class="form-field form-field--required">
+    <span class="label">Categoria del problema</span>
+    <div id="categories" class="category-pills"></div>
+    <span id="category-error" class="hint hint--error"></span>
+  </div>
+
+  <div class="form-field form-field--required">
+    <span class="label">Foto del problema</span>
+    <div id="photo-zone" class="photo">
+      <input id="photo-input" class="photo__input" type="file" accept="image/*" capture="environment">
+      <div class="photo__empty">
+        <strong>Toca para tomar o subir una foto</strong>
+        <span>La foto se guarda junto con el reporte</span>
+      </div>
+      <img id="photo-preview" class="photo__preview" alt="Vista previa de la foto">
+    </div>
+    <span id="photo-error" class="hint hint--error"></span>
+  </div>
+
+  <div class="form-field form-field--required">
+    <label class="label" for="title">Titulo</label>
+    <input id="title" class="input" type="text" maxlength="120"
+           placeholder="Ej: Poste de luz apagado en la cuadra">
+    <span id="title-error" class="hint hint--error"></span>
+  </div>
+
+  <div class="form-field form-field--required">
+    <label class="label" for="description">Descripcion</label>
+    <textarea id="description" class="textarea" maxlength="1000"
+              placeholder="Describe el problema con detalle"></textarea>
+    <span id="description-error" class="hint hint--error"></span>
+  </div>
+
+  <div class="form-field">
+    <span class="label">Ubicacion en tiempo real</span>
+    <div class="map">
+      <div class="map__canvas"><div class="map__pin" aria-hidden="true"></div></div>
+      <div class="map__status">
+        <span id="locate-status">Usa tu ubicacion actual o publica sin ubicacion.</span>
+        <span id="locate-coords" class="map__coords">Sin ubicacion</span>
+      </div>
+    </div>
+    <button id="locate-btn" class="btn btn--ghost" type="button">Usar mi ubicacion</button>
+  </div>
+
+  <div class="report-form__actions">
+    <a class="btn btn--ghost" href="index.html">Cancelar</a>
+    <button class="btn btn--primary" type="submit">Publicar reporte</button>
+  </div>
+</form>

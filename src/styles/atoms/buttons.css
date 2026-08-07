@@ -1,0 +1,158 @@
+/* ============================================
+   ATOMS / buttons
+   Átomo más básico reutilizable: botón.
+   GRASP: high cohesion (solo botones aquí).
+   Estados: hover (elevacion), active (presion),
+   disabled, loading (spinner) y ripple.
+   ============================================ */
+.btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background var(--motion) ease,
+    border-color var(--motion) ease,
+    color var(--motion) ease,
+    box-shadow var(--motion) ease,
+    transform var(--motion) var(--ease-out);
+}
+
+/* Hover: elevacion sutil */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Presion: hundimiento tactil */
+.btn:active {
+  transform: translateY(1px) scale(0.97);
+  transition-duration: var(--motion-fast);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgb(225 29 72 / 0.25);
+}
+
+.btn--primary:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 4px 14px rgb(225 29 72 / 0.35);
+}
+
+.btn--primary:active {
+  box-shadow: 0 1px 4px rgb(225 29 72 / 0.25);
+}
+
+.btn--primary:disabled {
+  background: var(--color-primary);
+  box-shadow: none;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn--ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+.btn--ghost:active {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.btn--ghost:disabled {
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+  background: transparent;
+}
+
+/* ============================================
+   RIPPLE (CSS nativo)
+   Onda de feedback táctil desde el centro del
+   boton al presionar. Sin JS.
+   ============================================ */
+.btn::after,
+.deck__action::after,
+.category-pills__item::after,
+.report-page__optional-toggle::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn:active::after,
+.deck__action:active::after,
+.category-pills__item:active::after,
+.report-page__optional-toggle:active::after {
+  animation: btn-ripple 0.45s var(--ease-out);
+}
+
+@keyframes btn-ripple {
+  from { scale: 0.25; opacity: 0.2; }
+  to { scale: 1; opacity: 0; }
+}
+
+/* ============================================
+   SPINNER (estado de carga)
+   Se activa con .is-loading en cualquier .btn.
+   ============================================ */
+.btn.is-loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn.is-loading::before {
+  content: "";
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+  flex: none;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Reducir movimiento: sin ripple ni elevaciones */
+@media (prefers-reduced-motion: reduce) {
+  .btn:active::after,
+  .deck__action:active::after,
+  .category-pills__item:active::after,
+  .report-page__optional-toggle:active::after {
+    animation: none;
+  }
+  .btn:hover {
+    transform: none;
+  }
+}

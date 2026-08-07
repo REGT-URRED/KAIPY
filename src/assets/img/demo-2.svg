@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Bache en la pista">
+  <defs>
+    <linearGradient id="road" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9ca3af"/>
+      <stop offset="1" stop-color="#6b7280"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#road)"/>
+  <rect x="0" y="0" width="800" height="60" fill="#cbd5e1"/>
+  <ellipse cx="400" cy="300" rx="180" ry="70" fill="#1f2937"/>
+  <ellipse cx="400" cy="295" rx="150" ry="50" fill="#111827"/>
+  <path d="M0 380 L800 380 L800 450 L0 450 Z" fill="#4b5563"/>
+  <line x1="120" y1="0" x2="120" y2="380" stroke="#e5e7eb" stroke-width="6" stroke-dasharray="30 20"/>
+  <line x1="680" y1="0" x2="680" y2="380" stroke="#e5e7eb" stroke-width="6" stroke-dasharray="30 20"/>
+</svg>

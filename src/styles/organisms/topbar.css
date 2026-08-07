@@ -1,0 +1,98 @@
+/* ============================================
+   ORGANISMS / topbar
+   Barra superior compacta estilo app.
+   z-index sobre Leaflet para que el contenido
+   nunca pase por encima al hacer scroll.
+   ============================================ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbar__inner {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: var(--space-3) var(--container-pad);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.topbar__brand {
+  font-weight: 800;
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+/* La "Y" latina es el simbolo de la marca */
+.brand-y {
+  color: var(--color-primary);
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.topbar__count {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.topbar .btn--ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+}
+
+/* Boton de tema: icono cuadrado compacto */
+.topbar__theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 999px;
+}
+
+/* Giro del icono al alternar tema */
+.topbar__theme.is-spinning svg {
+  animation: theme-spin 0.45s var(--ease-out);
+}
+
+@keyframes theme-spin {
+  from {
+    transform: rotate(0deg) scale(0.6);
+    opacity: 0.3;
+  }
+  to {
+    transform: rotate(360deg) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topbar__theme.is-spinning svg {
+    animation: none;
+  }
+}
+
+/* Desktop: barra mas amplia (vista de computadora) */
+@media (min-width: 900px) {
+  .topbar__inner {
+    max-width: 72rem;
+  }
+}

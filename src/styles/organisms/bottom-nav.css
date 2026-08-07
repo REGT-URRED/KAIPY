@@ -1,0 +1,135 @@
+/* ============================================
+   ORGANISMS / bottom-nav
+   Barra de navegacion inferior: Ver | FAB | Stats.
+   z-index sobre Leaflet y sobre el contenido.
+   ============================================ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bottom-nav__inner {
+  max-width: 30rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  align-items: end;
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: var(--space-2) var(--space-1) var(--space-3);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-align: center;
+  transition: color var(--motion) ease, transform var(--motion) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav__item:hover {
+  color: var(--color-text);
+}
+
+.bottom-nav__item:active {
+  transform: scale(0.92);
+}
+
+/* Pill indicador del item activo */
+.bottom-nav__item.is-active {
+  color: var(--color-primary);
+}
+
+.bottom-nav__item.is-active .bottom-nav__icon {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.bottom-nav__icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.4rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  transition: background var(--motion) ease, transform var(--motion) var(--ease-out);
+}
+
+.bottom-nav__icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bottom-nav__fab {
+  justify-self: center;
+  transform: translateY(-1.1rem);
+  /* backwards: anima desde el estado inicial pero
+     al terminar vuelve a los estilos base, para
+     que :hover/:active sigan funcionando */
+  animation: fab-in 0.45s var(--ease-spring) 0.1s backwards;
+}
+
+@keyframes fab-in {
+  from {
+    transform: translateY(-1.1rem) scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(-1.1rem) scale(1);
+    opacity: 1;
+  }
+}
+
+.bottom-nav__fab .btn {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  padding: 0;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--motion) ease,
+    box-shadow var(--motion) ease,
+    transform var(--motion) var(--ease-spring);
+}
+
+.bottom-nav__fab .btn:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 6px 18px rgb(225 29 72 / 0.4);
+}
+
+.bottom-nav__fab .btn:active {
+  transform: translateY(0) scale(0.92);
+  transition-duration: var(--motion-fast);
+}
+
+.bottom-nav__fab .btn svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+body {
+  padding-bottom: calc(4.2rem + env(safe-area-inset-bottom));
+}

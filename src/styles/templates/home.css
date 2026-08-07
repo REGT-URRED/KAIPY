@@ -1,0 +1,174 @@
+/* ============================================
+   TEMPLATES / home
+   Vista principal. Movil: mapa + deck Tinder.
+   Desktop (>=900px): mapa grande + panel de
+   controles y grilla amplia (vista, no reporte).
+   ============================================ */
+.home-view {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: var(--space-4) var(--container-pad) calc(7rem + env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  align-items: start;
+  animation: page-in var(--motion) var(--ease-out) both;
+}
+
+/* Estructura de columna de la pagina */
+.page-home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-home main {
+  flex: 1;
+}
+
+/* Mapa — altura fluida segun pantalla */
+.home-view .map__canvas {
+  height: clamp(13rem, 36dvh, 17rem);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.home-view .map {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* Encabezado de la vista */
+.home-view__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.home-view__title {
+  font-size: var(--text-lg);
+}
+
+.home-view__hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Panel desktop: oculto en movil */
+.desktop-panel {
+  display: none;
+}
+
+/* ============================================
+   VISTA DESKTOP
+   ============================================ */
+@media (min-width: 900px) {
+  .home-view {
+    max-width: 72rem;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    padding: var(--space-6) var(--container-pad) var(--space-12);
+  }
+
+  .home-view__map {
+    position: sticky;
+    top: 4.5rem;
+  }
+
+  .home-view__map .map__canvas {
+    height: calc(100vh - 12rem);
+    min-height: 30rem;
+  }
+
+  .home-view__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .home-view__title {
+    font-size: var(--text-2xl);
+  }
+
+  /* Deck y barra inferior son de movil */
+  .deck,
+  .deck__counter {
+    display: none;
+  }
+
+  .bottom-nav {
+    display: none;
+  }
+
+  body {
+    padding-bottom: 0;
+  }
+
+  /* Panel de controles + grilla */
+  .desktop-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    animation: panel-in var(--motion) var(--ease-out) both;
+  }
+
+  @keyframes panel-in {
+    from {
+      transform: translateY(0.5rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .d-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr) auto auto;
+    gap: var(--space-2);
+    align-items: center;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+
+  .d-toolbar .btn {
+    white-space: nowrap;
+  }
+
+  /* Meta: contador de resultados + limpiar filtros */
+  .d-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 1.6rem;
+  }
+
+  .d-meta__count {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .d-meta__clear {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--color-primary);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    transition: background var(--motion) ease, transform var(--motion) var(--ease-out);
+  }
+
+  .d-meta__clear:hover {
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  }
+
+  .d-meta__clear:active {
+    transform: scale(0.96);
+  }
+}

@@ -1,0 +1,160 @@
+/* ============================================
+   MOLECULES / desktop-card
+   Tarjeta amplia para la grilla de escritorio:
+   foto, badges, titulo, distancia, votos.
+   ============================================ */
+.d-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-3);
+}
+
+.d-grid__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-12);
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+}
+
+.d-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition:
+    box-shadow var(--motion) ease,
+    transform var(--motion) var(--ease-out),
+    border-color var(--motion) ease;
+  animation: d-card-in var(--motion) var(--ease-out) both;
+}
+
+/* Entrada escalonada sutil por posicion en la grilla */
+.d-grid > .d-card:nth-child(2) { animation-delay: 0.04s; }
+.d-grid > .d-card:nth-child(3) { animation-delay: 0.08s; }
+.d-grid > .d-card:nth-child(4) { animation-delay: 0.12s; }
+.d-grid > .d-card:nth-child(5) { animation-delay: 0.16s; }
+.d-grid > .d-card:nth-child(6) { animation-delay: 0.2s; }
+.d-grid > .d-card:nth-child(7) { animation-delay: 0.24s; }
+.d-grid > .d-card:nth-child(8) { animation-delay: 0.28s; }
+
+@keyframes d-card-in {
+  from {
+    transform: translateY(0.4rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.d-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+}
+
+.d-card:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: var(--motion-fast);
+}
+
+.d-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--color-surface);
+}
+
+.d-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s var(--ease-out);
+}
+
+.d-card:hover .d-card__img {
+  transform: scale(1.05);
+}
+
+.d-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: var(--text-2xl);
+}
+
+.d-card__badges {
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  bottom: var(--space-2);
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.d-card__badges .badge {
+  background: var(--color-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.d-card__badges .badge--category {
+  border: none;
+}
+
+.d-card__body {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.d-card__title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.d-card__meta {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.d-card__distance {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.d-card__votes {
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-card {
+    animation: none;
+  }
+  .d-card:hover {
+    transform: none;
+  }
+  .d-card:hover .d-card__img {
+    transform: none;
+  }
+}

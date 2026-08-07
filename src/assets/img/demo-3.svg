@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="Basura acumulada">
+  <defs>
+    <linearGradient id="park" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bbf7d0"/>
+      <stop offset="1" stop-color="#86efac"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#park)"/>
+  <rect x="0" y="380" width="800" height="70" fill="#16a34a"/>
+  <circle cx="330" cy="300" r="55" fill="#334155"/>
+  <circle cx="430" cy="320" r="48" fill="#1e293b"/>
+  <circle cx="500" cy="290" r="40" fill="#475569"/>
+  <rect x="280" y="255" width="200" height="45" rx="6" fill="#334155"/>
+  <circle cx="240" cy="310" r="30" fill="#0f172a"/>
+</svg>
